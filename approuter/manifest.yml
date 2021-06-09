@@ -1,0 +1,18 @@
+applications:
+- name: my-approuter
+  host: my-approuter
+  buildpack: nodejs_buildpack
+  memory: 128M
+  path:  .
+  env:
+    destinations: >
+      [
+        {
+          "name":"srv-api",
+          "url":"http://38ab1f2etrial-dev-kevincap-srv.cfapps.us10.hana.ondemand.com",
+          "forwardAuthToken": true
+        }
+      ]
+  services:
+    - my-xsuaa
+    - my-html5-runtime

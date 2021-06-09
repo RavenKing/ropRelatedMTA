@@ -1,0 +1,121 @@
+## Generated mta.yaml based on template version 0.4.0
+## appName = kevinCAP
+## language=nodejs; multitenant=false
+## approuter=
+_schema-version: '3.1'
+ID: kevinCAP
+version: 1.0.0
+description: "A simple CAP project."
+parameters:
+  enable-parallel-deployments: true
+  deploy_mode: html5-repo
+
+build-parameters:
+  before-all:
+   - builder: custom
+     commands:
+      - npm install --production
+      - npx -p @sap/cds-dk cds build --production
+      - npm --prefix ./app install ./app 
+      - npm run build --prefix ./app
+
+modules:
+ # --------------------- SERVER MODULE ------------------------
+ - name: kevinCAP-srv
+ # ------------------------------------------------------------
+   type: nodejs
+   path: gen/srv
+   requires:
+    # Resources extracted from CAP configuration
+    - name: kevinCAP-db
+   provides:
+    - name: srv-api      # required by consumers of CAP services (e.g. approuter)
+      properties:
+        srv-url: ${default-url}
+
+ # -------------------- SIDECAR MODULE ------------------------
+ - name: kevinCAP-db-deployer
+ # ------------------------------------------------------------
+   type: hdb
+   path: gen/db  
+   parameters:
+     buildpack: nodejs_buildpack
+   requires:
+    # 'hana' and 'xsuaa' resources extracted from CAP configuration
+    - name: kevinCAP-db
+
+
+ # --------------------- HTML5DEPLOYER MODULE -----------------
+ - name: my-hmtl5-deployer
+ # ------------------------------------------------------------
+   type: com.sap.html5.application-content
+   path: html5Deployer
+   requires:
+    - name: my-html5-host
+   build-parameters:
+    requires:
+      - name: my-app
+        artifacts:
+          - './*'
+        target-path: resources/app
+
+ # --------------------- REACT APP MODULE ---------------------
+ - name: my-app
+ # ------------------------------------------------------------
+   type: html5
+   path: app
+   build-parameters:
+      supported-platforms: []
+      build-result: build   
+ # --------------------- APPROUTER MODULE ---------------------
+ - name: my-approuter
+ # ------------------------------------------------------------
+   type: approuter.nodejs
+   path: approuter
+   requires:
+    - name: my-html5-runtime
+    - name: my-xsuaa
+    - name: srv-api
+      group: destinations
+      properties:
+        name: srv-api
+        url: ~{srv-url}
+        forwardAuthToken: true
+resources:
+ # services extracted from CAP configuration
+ # 'service-plan' can be configured via 'cds.requires.<name>.vcap.plan'
+# ------------------------------------------------------------
+ - name: kevinCAP-db
+# ------------------------------------------------------------
+   type: com.sap.xs.hdi-container
+   parameters:
+     service: hanatrial  # or 'hanatrial' on trial landscapes
+     service-plan: hdi-shared
+   properties:
+     hdi-service-name: hanaschema
+
+ # --------------------- HTML5 Runtime ----------------------
+ - name: my-html5-runtime
+ # ------------------------------------------------------------
+   parameters:
+     service-name: my-html5-runtime
+     service-plan: app-runtime
+     service: html5-apps-repo
+   type: org.cloudfoundry.managed-service
+
+# --------------------- HTML5 Host -------------------------
+ - name: my-html5-host
+# ------------------------------------------------------------
+   parameters:
+     service-name: my-html5-host
+     service-plan: app-host
+     service: html5-apps-repo
+   type: org.cloudfoundry.managed-service
+# --------------------- XSUAA Service ---------------------
+ - name: my-xsuaa
+# ------------------------------------------------------------
+   parameters:
+      path: ./xs-security.json
+      service-plan: application
+      service: xsuaa
+   type: org.cloudfoundry.managed-service
