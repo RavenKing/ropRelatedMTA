@@ -3,6 +3,9 @@ import ForceGraphGenerator from "./ForceGraphGenerator";
 import styles from "./forceGraph.module.css";
 import JsonData from "../data/db.json";
 
+import { BusyIndicator } from '@ui5/webcomponents-react';
+
+
 import {
     Dialog,
     Wizard,
