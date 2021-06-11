@@ -101,7 +101,7 @@ const ForceGraphGenerator = (
   const node = svg
     .append("g")
     .attr("stroke", "#fff")
-    .attr("stroke-width", 2)
+    .attr("stroke-width", 3)
     .selectAll("circle")
     .data(nodes)
     .join("circle")
