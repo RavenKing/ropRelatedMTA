@@ -1,4 +1,7 @@
 import * as d3 from "d3";
+import {
+  dragDisable
+} from "d3";
 import styles from "./forceGraph.module.css";
 import {
   createContextMenu
@@ -108,7 +111,12 @@ const ForceGraphGenerator = (
     .on("contextmenu", (event, d) => {
       createContextMenu(event, d, menuItems, width, height, "#graphSvg");
     })
-    .attr("r", 12)
+    .attr("r", (d) => {
+      if (d.count < 100) return 8;
+      if (d.count < 500) return 12;
+      if (d.count < 1000) return 16;
+      return 20
+    })
     .attr("fill", function (d) {
       return color(d.group);
     })
