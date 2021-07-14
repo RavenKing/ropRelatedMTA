@@ -1,0 +1,11 @@
+.node__root > circle {
+    r: 6;
+  }
+  
+  .node__branch > circle {
+    r: 6;
+  }
+  
+  .node__leaf > circle {
+    r: 6;
+  }
