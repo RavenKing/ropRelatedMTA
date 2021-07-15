@@ -4,7 +4,7 @@ import JsonData from "./data/skill.json";
 import "@ui5/webcomponents-fiori/dist/ShellBar.js";
 import ForceGraph from "./components/ForceGraph";
 import TreeGraph from "./components/TreeGraph";
-import backImg from './public/background.png';
+import backImg from "./public/background.png";
 // import { Tab, TabContainer } from "@ui5/webcomponents-react";
 import "@ui5/webcomponents-icons/dist/Assets.js";
 
@@ -20,11 +20,10 @@ function App() {
   });
   useEffect(() => {
     var data = document.getElementsByTagName("svg");
-    if(data.length>0)
-    {
-      data[0].setAttribute("viewBox","-40 -40 2000 2000")
+    if (data.length > 0) {
+      data[0].setAttribute("viewBox", "-40 -40 2000 2000");
     }
-    console.log(document.getElementsByTagName("svg"))
+    console.log(document.getElementsByTagName("svg"));
   }, [showRelationship]);
   return (
     <div className="container">
@@ -37,25 +36,31 @@ function App() {
         <ui5-button icon="nav-back" slot="startButton"></ui5-button>
       </ui5-shellbar>
 
-    <div style={{"margin-left":"100px","display":"inline-block","width": "40%","margin-top":"1%"}}>
-      <div>
-      <h1> Welcome To Skill Relationship Cockpit</h1> 
-      <img src={backImg}></img>
+      <div
+        style={{ display: "flex", "flex-direction": "row", "margin-top": "1%","margin-left": "100px", }}
+      >
+        <div>
+          <h1> Welcome To Skill Relationship Cockpit</h1>
+          <img src={backImg}></img>
+        </div>
+        <div
+          style={{
+            "margin-left": "50px",
+            display: "inline-block",
+            width: "50%",
+          }}
+        >
+          <h2>Discover skill relationships</h2>
+          <p>
+            Detailed description about what skill relation ship cockpit can
+            offer,it basic functionalities like discovering relationship,giving
+            feedback etc. Why we need skill relationships. how to give
+            feedbback, what the line length represents,etc Some useful links can
+            also be put in this place.etc If needed , can we put a skfsdksd kskd
+            ;lsk ;
+          </p>
+        </div>
       </div>
-    </div>
-    <div style={{"margin-left":"50px","display":"inline-block","width": "50%"}}>
-      <h2>Discover skill relationships</h2>
-      <p> 
-      Detailed description about what skill relation ship cockpit can offer,it basic functionalities like  discovering relationship,giving feedback etc.
-      Why we need skill relationships. how to give feedbback, what the line length represents,etc
-
-      Some useful links can also be put in this place.etc
-      If needed , can we put a skfsdksd kskd ;lsk ;
-
-      </p>
-      </div>
-
-
       <div style={{ "margin-left": "200px", "margin-right": "200px" }}>
         <Header
           skills={skills}
