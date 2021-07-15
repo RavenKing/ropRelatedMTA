@@ -2,7 +2,7 @@ import PropTypes from "prop-types";
 // import Button from "./Button";
 // import { useRef,useState } from "react";
 import ReactSearchBox from "react-search-box";
-// import { Dialog, Button } from "@ui5/webcomponents-react";
+import { ComboBox, ComboBoxItem, Icon } from "@ui5/webcomponents-react";
 // import { createPortal } from "react-dom";
 // import JsonData from "../data/db.json";
 
@@ -24,10 +24,27 @@ import ReactSearchBox from "react-search-box";
 //   );
 // };
 
-const Header = ({ skills, skill, searchSkill }) => {
+const Header = ({ skills, skill, setShowRorT, searchSkill }) => {
   return (
     <>
       <header className="header">
+        <ComboBox
+          className=""
+          onSelectionChange={function noRefCheck(e) {
+            if (e.target.value === "Skill Relationship") {
+              setShowRorT(false);
+            } else {
+              setShowRorT(true);
+            }
+          }}
+          value="Skill Relationship"
+          slot=""
+          style={{}}
+          tooltip=""
+        >
+          <ComboBoxItem text="Skill Relationship" />
+          <ComboBoxItem text="Skill Tree" />
+        </ComboBox>
         <div style={{ marginTop: "8px", width: "80%" }}>
           {/* search box can be improved using Levenstein distance */}
           <ReactSearchBox
