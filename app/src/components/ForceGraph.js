@@ -79,15 +79,15 @@ const ForceGraph = ({ skill }) => {
             heading={sourceSkill.source}
             icon="hint"
             disabled
-          ></WizardStep>
+          ></WizardStep>{" "}
           <WizardStep heading={targetSkill} icon="hint" selected>
             <MessageStrip className="" slot="" style={{}} tooltip="">
-              The similarity between {sourceSkill.source} and{" "}
-              {sourceSkill.target} is{" "}
-              {parseFloat(sourceSkill.similarity).toFixed(2)}! Agree or Deny the
-              relationship will help us improve our tool.
+              The similarity between {sourceSkill.source}
+              and {sourceSkill.target}
+              is {parseFloat(sourceSkill.similarity).toFixed(2)}!Agree or Deny
+              the relationship will help us improve our tool.{" "}
             </MessageStrip>
-            Are they Relavent?
+            Are they Relavent ?
             <Switch
               checked
               className=""
@@ -102,7 +102,7 @@ const ForceGraph = ({ skill }) => {
               tooltip=""
             />
             <br />
-            Comments：
+            Comments：{" "}
             <TextArea
               className=""
               onChange={function noRefCheck(e) {
@@ -114,11 +114,16 @@ const ForceGraph = ({ skill }) => {
               style={{}}
               tooltip=""
             />
-            <Button style={{ marginTop: "10px" }} onClick={submitFeedBack}>
-              submit
-            </Button>
-          </WizardStep>
-        </Wizard>
+            <Button
+              style={{
+                marginTop: "10px",
+              }}
+              onClick={submitFeedBack}
+            >
+              submit{" "}
+            </Button>{" "}
+          </WizardStep>{" "}
+        </Wizard>{" "}
       </div>
     );
   };
@@ -127,8 +132,8 @@ const ForceGraph = ({ skill }) => {
   const [userNodes, setuserNodes] = useState([]);
   const [focussedSkills, setfocussedSkills] = useState(new Set());
   let [allData, setAllData] = useState({
-    nodes: [],
-    links: [],
+    nodes: JsonData.nodes,
+    links: JsonData.links,
   });
   const [skillShow, setSkillShow] = useState({
     nodes: [],
@@ -136,9 +141,9 @@ const ForceGraph = ({ skill }) => {
   });
 
   const nodeHoverTooltip = useCallback((node) => {
-    return `<div>     
-      <b>${node.name}</b>
-    </div>`;
+    return `<div>
+                  <b>${node.name}</b>
+                </div>`;
   }, []);
 
   const fetchSkills = async () => {
@@ -146,8 +151,11 @@ const ForceGraph = ({ skill }) => {
     // const nodeData = await resNodes.json();
     const resLinks = JsonData.links;
     // const linkData = await resLinks.json();
-    setAllData({ nodes: resNodes, links: resLinks });
-    // return { nodeData, linkData };
+    setAllData({
+      nodes: resNodes,
+      links: resLinks,
+    });
+    // return {nodeData, linkData};
   };
 
   useEffect(() => {
@@ -157,13 +165,130 @@ const ForceGraph = ({ skill }) => {
 
   const getSkills = async (skill) => {
     console.log("get skill now...");
-    // const { nodeData, linkData } = await fetchSkills();
-    const linkFound = allData.links.filter((link) => link.source === skill);
-    const nodeResult = linkFound.map((l) => l.target);
-    nodeResult.push(skill);
-    const nodeFound = allData.nodes.filter((node) =>
-      nodeResult.includes(node.name)
-    );
+    console.log(skill);
+    var nodeFound = [];
+    var linkFound = [];
+    if (skill === "") {
+      console.log("empty");
+      allData.nodes.sort((a, b) => (a.count < b.count ? 1 : -1));
+      nodeFound = allData.nodes.slice(0, 5);
+      // nodeFound.push({
+      //   id:999999,
+      //   name:"skills"
+      // })
+      // console.log(nodeFound);
+      nodeFound.map((node, index) => {
+        node.id = index + "0" + index;
+        node.group = index;
+      });
+      var resultNodes = [];
+      //Find All nodes and tag the nodes
+      var linkTmp = [];
+      allData.links.map((link, linkIndex) => {
+        nodeFound.map((one, index) => {
+          if (one.name == link.source) {
+            resultNodes.push({
+              id: index + "0" + (linkIndex + 200),
+              name: link.target,
+              group: index,
+            });
+            link.source = one.id;
+            link.group = one.group;
+            linkTmp.push({
+              group: one.group,
+              source: one.id,
+              target: index + "0" + (linkIndex + 200),
+            });
+          }
+        });
+      });
+
+      console.log(linkTmp);
+      console.log(nodeFound);
+
+      nodeFound=nodeFound.concat(resultNodes);
+      console.log(resultNodes);
+      linkFound=linkTmp;
+      // linkTmp.map((link)=>{
+      //   nodeFound.map((node)=>{
+      //       if(link.source.)
+
+      //   })
+
+      // })
+
+      nodeFound.map((one, index) => {
+        //  one.group=index+1;
+        // linkFound.push({
+        //   source:"skills",
+        //   target:one.name,
+        //   group:0
+        // })
+        // allData.links.map((link) => {
+        //   if (link.source === one.name) {
+        //     linkFound.push({source:one.id,
+        //       target
+        //     });
+        //     allData.nodes.map((node) => {
+        //       if ( link.target.includes(node.name)) {
+        //         nodeFound.push({
+        //           id:node.index+"0"+index,
+        //           name:node.name,
+        //           group:index+1,
+        //           count:node.count
+        //         });
+        //       }
+        //     });
+        //   }
+        // });
+        // allData.links.map((link) => {
+        //   if (link.source === one.name) {
+        //     linkFound.push({link});
+        //     allData.nodes.map((node) => {
+        //       if ( link.target.includes(node.name)) {
+        //         nodeFound.push({
+        //           id:node.index+"0"+index,
+        //           name:node.name,
+        //           group:index+1,
+        //           count:node.count
+        //         });
+        //       }
+        //     });
+        //   }
+        // });
+        //console.log(nodeFound);
+        // linkFound = linkFound.concat(
+        //   allData.links.filter((link) => link.source === one.name)
+        // );
+      });
+
+      // linkFound = allData.links.filter((link) => link.source === skill);
+      // // linkFound = [];
+      // nodeFound = nodeFound.concat(allData.nodes.filter((node) =>
+      //   nodeResult.includes(node.name)
+      //  ));
+      // allData.nodes.sort((a, b) => a.count < b.count ?1 : -1);
+      // const nodeFound = allData.nodes.slice(0, 50);
+      // console.log(allData.nodes.slice(0, 50));
+      // // const {nodeData, linkData} = await fetchSkills();
+      // // const linkFound = allData.links.filter((link) => link.source === skill);
+
+      // // const nodeResult = linkFound.map((l) => l.target);
+      // // nodeResult.push(skill);
+      // // const nodeFound = allData.nodes.filter((node) =>
+      // //   nodeResult.includes(node.name)
+      // );
+    } else {
+      linkFound = allData.links.filter((link) => link.source === skill);
+
+      var nodeResult = linkFound.map((l) => l.target);
+      nodeResult.push(skill);
+      nodeFound = allData.nodes.filter((node) =>
+        nodeResult.includes(node.name)
+      );
+    }
+    // const {nodeData, linkData} = await fetchSkills();
+    console.log(nodeFound);
     setSkillShow({
       nodes: nodeFound,
       links: linkFound,
@@ -175,7 +300,7 @@ const ForceGraph = ({ skill }) => {
 
   const getUserSkills = async (skill) => {
     console.log("get user skill now...");
-    // const { nodeData, linkData } = await fetchSkills();
+    // const {nodeData, linkData} = await fetchSkills();
     const targetNodes = [...userNodes];
     targetNodes.push(skill);
     const linkFound = allData.links.filter((link) =>
@@ -251,11 +376,29 @@ const ForceGraph = ({ skill }) => {
       }
     };
     const setSkillGraph = async () => {
-      if (skill !== "") {
+      if (true) {
         await setGroupOn(skill);
         setTimeout(() => {
           getSkills(skill);
         }, 200);
+      } else {
+        // allData.nodes.sort((a,b)=>a.count<b.count?1:-1)
+        // const nodeFound=allData.nodes.slice(0,50);
+        // console.log(allData.nodes.slice(0,50));
+        // // const { nodeData, linkData } = await fetchSkills();
+        // // const linkFound = allData.links.filter((link) => link.source === skill);
+        // // const nodeResult = linkFound.map((l) => l.target);
+        // // nodeResult.push(skill);
+        // // const nodeFound = allData.nodes.filter((node) =>
+        // //   nodeResult.includes(node.name)
+        // // );
+        // setSkillShow({
+        //   nodes: nodeFound,
+        //   links: linkFound,
+        // });
+        // if (document.querySelectorAll("#forceGraph")[0].childNodes.length > 0) {
+        //   document.querySelectorAll("#forceGraph")[0].childNodes[0].remove();
+        // }
       }
     };
     setbackSkillGraph();
@@ -278,7 +421,7 @@ const ForceGraph = ({ skill }) => {
 
   useEffect(() => {
     let destroyFn;
-    if (containerRef.current && skillShow.links.length > 0) {
+    if (containerRef.current) {
       console.log("graph regenerated...");
       const { destroy } = ForceGraphGenerator(
         containerRef.current,
@@ -296,13 +439,13 @@ const ForceGraph = ({ skill }) => {
 
   return (
     <>
-      <div ref={containerRef} className={styles.container} id="forceGraph" />
+      <div ref={containerRef} className={styles.container} id="forceGraph" />{" "}
       {createPortal(
         <Dialog ref={dialogRef}>
           <ComboBoxComponent />
         </Dialog>,
         document.body
-      )}
+      )}{" "}
     </>
   );
 };

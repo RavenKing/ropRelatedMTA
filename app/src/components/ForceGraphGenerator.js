@@ -68,7 +68,7 @@ const ForceGraphGenerator = (
       "link",
       d3
       .forceLink(links)
-      .id((d) => d.name)
+      .id((d) => d.id)
       .distance((d) => 100)
     )
     .force("charge", d3.forceManyBody().strength(-300))
