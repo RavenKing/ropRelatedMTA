@@ -191,6 +191,7 @@ const ForceGraph = ({ skill }) => {
               id: index + "0" + (linkIndex + 200),
               name: link.target,
               group: index,
+              //count:one.count
             });
             link.source = one.id;
             link.group = one.group;
@@ -202,13 +203,19 @@ const ForceGraph = ({ skill }) => {
           }
         });
       });
-
+      allData.nodes.map((one) => {
+        resultNodes.map((resultNode) => {
+          if (resultNode.name == one.name) {
+            resultNode.count = one.count;
+          }
+        });
+      });
       console.log(linkTmp);
       console.log(nodeFound);
 
-      nodeFound=nodeFound.concat(resultNodes);
+      nodeFound = nodeFound.concat(resultNodes);
       console.log(resultNodes);
-      linkFound=linkTmp;
+      linkFound = linkTmp;
       // linkTmp.map((link)=>{
       //   nodeFound.map((node)=>{
       //       if(link.source.)
