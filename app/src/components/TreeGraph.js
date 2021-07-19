@@ -1053,11 +1053,11 @@ export default function OrgChartTree({
     //     }
     //   }
     // }
-    if(selectedData===target.data.name)
-    {
-      return "result_to_leaf" 
+    if (selectedData === target.data.name) {
+      return "result_to_leaf"
     }
     if (skill != "") {
+
       if (target.depth == 2 && target.data.children.length > 0) {
         target.data.children.map((thirdPoint) => {
           if (thirdPoint.name.includes(skill)) {
@@ -1070,7 +1070,7 @@ export default function OrgChartTree({
     }
 
 
-    if (!target.children) {
+    if (target.depth === 3) {
       if (target.data.name.includes(skill)) {
         return "result_to_leaf"
       }
@@ -1109,7 +1109,6 @@ export default function OrgChartTree({
         siblings: 0
       }
     }
-    /> <
-    /div>
+    /> </div >
   );
 }
