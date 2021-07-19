@@ -1,6 +1,11 @@
 .node__root > circle {
     r: 6;
   }
+
+  .result_to_leaf
+  {
+    stroke:red!important
+  }
   
   .node__branch > circle {
     r: 6;

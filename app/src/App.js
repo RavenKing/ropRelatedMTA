@@ -71,7 +71,7 @@ function App() {
 
         {showRelationship == false ? (
           <React.Fragment>
-            <TreeGraph viewBox="-40 -40 2000 2000 "></TreeGraph>
+            <TreeGraph   skill={skill}></TreeGraph>
           </React.Fragment>
         ) : (
           <React.Fragment>
