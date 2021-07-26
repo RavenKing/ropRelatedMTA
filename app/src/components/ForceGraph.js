@@ -1,9 +1,16 @@
-import React, { useRef, useEffect, useState, useCallback } from "react";
+import React, {
+  useRef,
+  useEffect,
+  useState,
+  useCallback
+} from "react";
 import ForceGraphGenerator from "./ForceGraphGenerator";
 import styles from "./forceGraph.module.css";
 import JsonData from "../data/db.json";
 
-import { BusyIndicator } from "@ui5/webcomponents-react";
+import {
+  BusyIndicator
+} from "@ui5/webcomponents-react";
 
 import {
   Dialog,
@@ -14,7 +21,9 @@ import {
   MessageStrip,
   Switch,
 } from "@ui5/webcomponents-react";
-import { createPortal } from "react-dom";
+import {
+  createPortal
+} from "react-dom";
 import axios from "axios";
 
 // const DialogComponent = () => {
@@ -31,7 +40,9 @@ import axios from "axios";
 //   );
 // };
 
-const ForceGraph = ({ skill }) => {
+const ForceGraph = ({
+  skill
+}) => {
   const dialogRef = useRef(null);
   const [targetSkill, setTargetSkill] = useState("");
   const [sourceSkill, setSourceSkill] = useState({});
@@ -62,64 +73,105 @@ const ForceGraph = ({ skill }) => {
         dialogRef.current.close();
       });
     };
-    return (
-      <div>
-        <Wizard
-          icon="hint"
-          className=""
-          onSelectionChange={function noRefCheck() {}}
-          slot=""
-          style={{
-            height: "400px",
-            width: "600px",
-          }}
-          tooltip=""
-        >
-          <WizardStep
-            heading={sourceSkill.source}
-            icon="hint"
-            disabled
-          ></WizardStep>
-          <WizardStep heading={targetSkill} icon="hint" selected>
-            <MessageStrip className="" slot="" style={{}} tooltip="">
-              The similarity between {sourceSkill.source} and{" "}
-              {sourceSkill.target} is{" "}
-              {parseFloat(sourceSkill.similarity).toFixed(2)}! Agree or Deny the
-              relationship will help us improve our tool.
-            </MessageStrip>
-            Are they Relavent?
-            <Switch
-              checked
-              className=""
-              onChange={function noRefCheck(e) {
-                feedback.realtedOrNot = e.target.checked;
-                setFeedback(feedback);
-              }}
-              slot=""
-              style={{}}
-              textOff=""
-              textOn=""
-              tooltip=""
-            />
-            <br />
-            Comments：
-            <TextArea
-              className=""
-              onChange={function noRefCheck(e) {
-                feedback.comment = e.target.value;
-                setFeedback(feedback);
-              }}
-              onInput={function noRefCheck() {}}
-              slot=""
-              style={{}}
-              tooltip=""
-            />
-            <Button style={{ marginTop: "10px" }} onClick={submitFeedBack}>
-              submit
-            </Button>
-          </WizardStep>
-        </Wizard>
-      </div>
+    return ( <
+      div >
+      <
+      Wizard icon = "hint"
+      className = ""
+      onSelectionChange = {
+        function noRefCheck() {}
+      }
+      slot = ""
+      style = {
+        {
+          height: "400px",
+          width: "600px",
+        }
+      }
+      tooltip = "" >
+      <
+      WizardStep heading = {
+        sourceSkill.source
+      }
+      icon = "hint"
+      disabled >
+      < /WizardStep> <
+      WizardStep heading = {
+        targetSkill
+      }
+      icon = "hint"
+      selected >
+      <
+      MessageStrip className = ""
+      slot = ""
+      style = {
+        {}
+      }
+      tooltip = "" >
+      The similarity between {
+        sourceSkill.source
+      }
+      and {
+        " "
+      } {
+        sourceSkill.target
+      }
+      is {
+        " "
+      } {
+        parseFloat(sourceSkill.similarity).toFixed(2)
+      }!Agree or Deny the relationship will help us improve our tool. <
+      /MessageStrip>
+      Are they Relavent ?
+      <
+      Switch checked className = ""
+      onChange = {
+        function noRefCheck(e) {
+          feedback.realtedOrNot = e.target.checked;
+          setFeedback(feedback);
+        }
+      }
+      slot = ""
+      style = {
+        {}
+      }
+      textOff = ""
+      textOn = ""
+      tooltip = "" /
+      >
+      <
+      br / >
+      Comments： <
+      TextArea className = ""
+      onChange = {
+        function noRefCheck(e) {
+          feedback.comment = e.target.value;
+          setFeedback(feedback);
+        }
+      }
+      onInput = {
+        function noRefCheck() {}
+      }
+      slot = ""
+      style = {
+        {}
+      }
+      tooltip = "" /
+      >
+      <
+      Button style = {
+        {
+          marginTop: "10px"
+        }
+      }
+      onClick = {
+        submitFeedBack
+      } >
+      submit <
+      /Button> <
+      /WizardStep> <
+      /Wizard> <
+      /div>
     );
   };
 
@@ -146,7 +198,10 @@ const ForceGraph = ({ skill }) => {
     // const nodeData = await resNodes.json();
     const resLinks = JsonData.links;
     // const linkData = await resLinks.json();
-    setAllData({ nodes: resNodes, links: resLinks });
+    setAllData({
+      nodes: resNodes,
+      links: resLinks
+    });
     // return { nodeData, linkData };
   };
 
@@ -157,13 +212,48 @@ const ForceGraph = ({ skill }) => {
 
   const getSkills = async (skill) => {
     console.log("get skill now...");
+    allData.links = JsonData.links;
+    allData.nodes = JsonData.nodes;
+    var nodeFound = [];
+    var linkFound = [];
+    var nodeResult = []
+    if (skill === "") {
+      console.log("empty");
+      allData.nodes.sort((a, b) => (a.count < b.count ? 1 : -1));
+      nodeFound = allData.nodes.slice(0, 5);
+      allData.links.map((link) => {
+        nodeFound.map((node) => {
+          if (node.name === link.source) {
+            linkFound.push(link);
+            nodeResult.push({
+              name: link.target
+            })
+          }
+        })
+      })
+    //</Button>  nodeFound = nodeFound.concat(nodeResult);
+      nodeResult.map((foundedNode) => {
+        let count = 0;
+        nodeFound.map((node) => {
+          if (node.name == foundedNode.name) {
+            count = 1
+          }
+        })
+        if (count == 0) {
+          nodeFound.push(foundedNode);
+        }
+      })
+    } else {
+      linkFound = allData.links.filter((link) => link.source === skill);
+      const nodeResult = linkFound.map((l) => l.target);
+      nodeResult.push(skill);
+      nodeFound = allData.nodes.filter((node) =>
+        nodeResult.includes(node.name)
+      );
+    }
+
     // const { nodeData, linkData } = await fetchSkills();
-    const linkFound = allData.links.filter((link) => link.source === skill);
-    const nodeResult = linkFound.map((l) => l.target);
-    nodeResult.push(skill);
-    const nodeFound = allData.nodes.filter((node) =>
-      nodeResult.includes(node.name)
-    );
+
     setSkillShow({
       nodes: nodeFound,
       links: linkFound,
@@ -251,7 +341,7 @@ const ForceGraph = ({ skill }) => {
       }
     };
     const setSkillGraph = async () => {
-      if (skill !== "") {
+      if (true) {
         await setGroupOn(skill);
         setTimeout(() => {
           getSkills(skill);
@@ -280,7 +370,9 @@ const ForceGraph = ({ skill }) => {
     let destroyFn;
     if (containerRef.current && skillShow.links.length > 0) {
       console.log("graph regenerated...");
-      const { destroy } = ForceGraphGenerator(
+      const {
+        destroy
+      } = ForceGraphGenerator(
         containerRef.current,
         skillShow.links,
         skillShow.nodes,
@@ -294,16 +386,28 @@ const ForceGraph = ({ skill }) => {
     return destroyFn;
   }, [skillShow]);
 
-  return (
-    <>
-      <div ref={containerRef} className={styles.container} id="forceGraph" />
-      {createPortal(
-        <Dialog ref={dialogRef}>
-          <ComboBoxComponent />
-        </Dialog>,
+  return ( <
+    >
+    <
+    div ref = {
+      containerRef
+    }
+    className = {
+      styles.container
+    }
+    id = "forceGraph" / > {
+      createPortal( <
+        Dialog ref = {
+          dialogRef
+        } >
+        <
+        ComboBoxComponent / >
+        <
+        /Dialog>,
         document.body
-      )}
-    </>
+      )
+    } <
+    />
   );
 };
 
